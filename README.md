@@ -47,15 +47,17 @@ cd myservice
 Here the help output for dcosdev.
 ```
 dcosdev -h
+
 dcos service development tools.
 
 Usage:
-  dcosdev new operator <name> <sdk-version>
-  dcosdev new basic <name>
+  dcosdev operator new <name> <sdk-version>
+  dcosdev basic new <name>
   dcosdev up
   dcosdev test
-  dcosdev build
   dcosdev release
+  dcosdev operator add java
+  dcosdev operator build java
   dcosdev (-h | --help)
   dcosdev --version
 
@@ -74,11 +76,11 @@ All
 
 You have the choice to create an operator services (sdk based) or basic services (marathon).
 
-### dcosdev new operator
+### dcosdev operator new
 
 Creating a new operator service, i.e. a sdk based service.
 ```
-dcos new operator myservice 0.42.1
+dcos operator new myservice 0.42.1
 ```
 
 Your myservice project will now have the following folder file structure.
@@ -92,11 +94,11 @@ myservice
      |- resource.json
 ```
 
-### dcosdev new basic
+### dcosdev basic new
 
 Creating a new basic service, i.e. a marathon service.
 ```
-dcos new basic myservice
+dcos basic new myservice
 ```
 
 Your myservice project will now have the following folder file structure.
@@ -126,4 +128,14 @@ dcos package install myservice --yes
 dcos package uninstall myservice
 
 dcos package repo remove myservice-repo
+```
+
+### custom scheduler
+
+```
+dcosdev operator add java
+```
+
+```
+dcosdev operator build java
 ```
