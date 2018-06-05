@@ -44,7 +44,7 @@ mkdir myservice
 cd myservice
 ```
 
-Here teh help output for dcosdev.
+Here the help output for dcosdev.
 ```
 dcosdev -h
 dcos service development tools.
@@ -70,7 +70,9 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
-You can create operator services (sdk based), or basic services (marathon).
+All 
+
+You have the choice to create an operator services (sdk based) or basic services (marathon).
 
 ### dcosdev new operator
 
@@ -110,3 +112,18 @@ myservice
 
 ### dcosdev up
 
+You upload your service assets to the asset repository using the following command.
+```
+dcosdev up
+```
+
+You will see the following output, showing you the dcos cli commands to take it from here.
+```
+after 1st up: dcos package repo add myservice-repo --index=0 http://<public-agent-ip>:9000/artifacts/myservice/myservice-repo.json
+
+dcos package install myservice --yes
+
+dcos package uninstall myservice
+
+dcos package repo remove myservice-repo
+```
