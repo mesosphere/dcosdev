@@ -1,5 +1,5 @@
 template = """
-package com.mesosphere.sdk.%(template)s.scheduler;
+package com.mesosphere.sdk.engine.scheduler;
 
 import com.mesosphere.sdk.scheduler.SchedulerConfig;
 import com.mesosphere.sdk.scheduler.SchedulerRunner;
