@@ -1,1 +1,6 @@
 *.pyc
+
+dcosdev.egg-info
+build
+dist
+
