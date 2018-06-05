@@ -109,7 +109,7 @@ def main():
         print('\nafter 1st up: dcos package repo add '+operator_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+operator_name()+'/'+operator_name()+'-repo.json')
         print('\ndcos package install '+operator_name()+' --yes')
         print('\ndcos package uninstall '+operator_name())
-        print('\ndcos package remove '+operator_name()+'\n')
+        print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
 
 
 if __name__ == '__main__':
