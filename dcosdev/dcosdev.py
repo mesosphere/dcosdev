@@ -3,12 +3,13 @@
 """dcos service development tools.
 
 Usage:
-  dcosdev new operator <name> <sdk-version>
-  dcosdev new basic <name>
+  dcosdev operator new <name> <sdk-version>
+  dcosdev basic new <name>
   dcosdev up
   dcosdev test
-  dcosdev build
   dcosdev release
+  dcosdev operator add java
+  dcosdev operator build java
   dcosdev (-h | --help)
   dcosdev --version
 
@@ -23,6 +24,7 @@ from collections import OrderedDict
 sys.dont_write_bytecode=True
 from minio import Minio
 from minio.error import ResponseError
+import docker
 
 import oper
 import basic
@@ -32,6 +34,10 @@ def operator_name():
     with open('universe/package.json', 'r') as f:
          package = json.load(f)
     return package['name']
+def sdk_version():
+    with open('universe/package.json', 'r') as f:
+         package = json.load(f)
+    return package['tags'][0]
 
 def build_repo():
     repository = {'packages': [] }
@@ -72,13 +78,13 @@ def main():
     args = docopt(__doc__, version='dcosdev 0.0.1')
     print(args)
 
-    if args['new'] and args['operator']:
+    if  args['operator'] and args['new']:
         with open('svc.yml', 'w') as file:
              file.write(oper.svc.template%{'template': args['<name>']})
 
         os.makedirs('universe')
         with open('universe/package.json', 'w') as file:
-             file.write(oper.package.template%{'template': args['<name>']})
+             file.write(oper.package.template%{'template': args['<name>'],'version': args['<sdk-version>']})
         with open('universe/marathon.json.mustache', 'w') as file:
              file.write(oper.mjm.template)
         with open('universe/config.json', 'w') as file:
@@ -86,7 +92,7 @@ def main():
         with open('universe/resource.json', 'w') as file:
              file.write(oper.resource.template%{'template': args['<name>'],'version': args['<sdk-version>']})
 
-    if args['new'] and args['basic']:
+    elif args['basic'] and args['new']:
         with open('cmd.sh', 'w') as file:
              file.write(basic.cmd.template%{'template': args['<name>']})
 
@@ -111,6 +117,19 @@ def main():
         print('\ndcos package uninstall '+operator_name())
         print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
 
+    elif args['operator'] and args['add'] and args['java']:
+        os.makedirs('java/src/main/java/com/mesosphere/sdk/'+operator_name()+'/scheduler')
+        with open('java/build.gradle', 'w') as file:
+             file.write(oper.build_gradle.template%{'version': sdk_version()})
+        with open('java/src/main/java/com/mesosphere/sdk/'+operator_name()+'/scheduler/Main.java', 'w') as file:
+             file.write(oper.main_java.template%{'template': operator_name()})
+
+    elif args['operator'] and args['build'] and args['java']:
+        print('docker')
+        dockerClient = docker.from_env()
+        log = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', remove=True,
+                                    volumes={os.getcwd()+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
+        print(log)
 
 if __name__ == '__main__':
     main()

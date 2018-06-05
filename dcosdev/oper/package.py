@@ -10,7 +10,7 @@ template = """
   "description": "YOURNAMEHERE on DC/OS",
   "selected": false,
   "framework": true,
-  "tags": ["%(template)s"],
+  "tags": ["%(version)s", "%(template)s"],
   "postInstallNotes": "DC/OS YOURNAMEHERE is being installed!\\n\\n\\tDocumentation: {{documentation-path}}\\n\\tIssues: {{issues-path}}",
   "postUninstallNotes": "DC/OS YOURNAMEHERE is being uninstalled."
 }
