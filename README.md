@@ -31,7 +31,7 @@ Create a bucket named *artifacts* and set its policy to *Read And Write*.
 
 ## install
 
-Install the dcosdev tool.
+Install the dcosdev cli.
 ```
 python setup.py install
 ```
@@ -44,6 +44,8 @@ In your workspace create a project folder for your new service.
 mkdir myservice
 cd myservice
 ```
+
+**Note:** All dcosdev cli commands have to run from the root of your project folder.
 
 Here the help output for dcosdev.
 ```
@@ -72,8 +74,6 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 ```
 export MINIO_HOST=<public-agent-ip>
 ```
-
-**Note:** All dcosdev commands have to run from the root of your project folder.
 
 dcosdev gives you the choice to create an operator services (sdk based) or basic services (marathon).
 
