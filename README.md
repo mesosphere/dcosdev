@@ -73,6 +73,8 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
+**Note:** All dcosdev commands have to run from the root of your project folder.
+
 dcosdev gives you the choice to create an operator services (sdk based) or basic services (marathon).
 
 ### operator services, aka sdk based service
