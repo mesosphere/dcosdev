@@ -120,6 +120,7 @@ myservice
      |- resource.json
 ```
 
+You build your custome scheduler using the following command.
 ```
 dcosdev operator build java
 ```
