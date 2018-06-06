@@ -6,7 +6,8 @@ git clone https://github.com/realmbgl/dcosdev.git
 cd dcosdev
 ```
 
-## setup asset repository
+
+## setup the asset repository
 
 dcosdev uses minio as its asset repository.
 
@@ -28,7 +29,6 @@ The minio credentials are minio / minio123.
 Create a bucket named *artifacts* and set its policy to *Read And Write*.
 
 
-
 ## install
 
 Install the dcosdev tool.
@@ -36,7 +36,8 @@ Install the dcosdev tool.
 python setup.py install
 ```
 
-## using
+
+## developer guide
 
 In your workspace create a project folder for your new service.
 ```
@@ -72,13 +73,13 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
-All 
+dcosdev gives you the choice to create an operator services (sdk based) or basic services (marathon).
 
-You have the choice to create an operator services (sdk based) or basic services (marathon).
+### operator services, aka sdk based service
 
-### dcosdev operator new
+#### dcosdev operator new
 
-Creating a new operator service, i.e. a sdk based service.
+Creating a new operator service.
 ```
 dcos operator new myservice 0.42.1
 ```
@@ -94,9 +95,37 @@ myservice
      |- resource.json
 ```
 
-### dcosdev basic new
+#### custom scheduler
 
-Creating a new basic service, i.e. a marathon service.
+Use the following command to add gradle and java resources to your project for custome scheduler development.
+```
+dcosdev operator add java
+```
+
+Your myservice project will now have the following folder file structure.
+```
+myservice
+ |- svc.yml
+ |- java
+ |   |- build.gradle
+ |   |- settings.gradle
+ |   |- src
+ |   |   |- /main/java/com/mesosphere/sdk/engine/scheduler/Main.java
+ |- universe
+     |- package.json
+     |- marathon.json.mustache
+     |- config.json
+     |- resource.json
+```
+
+```
+dcosdev operator build java
+```
+
+
+### basic service, aka marathon services
+
+Creating a new basic service.
 ```
 dcos basic new myservice
 ```
@@ -130,12 +159,3 @@ dcos package uninstall myservice
 dcos package repo remove myservice-repo
 ```
 
-### custom scheduler
-
-```
-dcosdev operator add java
-```
-
-```
-dcosdev operator build java
-```
