@@ -1,6 +1,6 @@
 # dcosdev
 
-First clone this repository.
+First clone the dcosdev repository.
 ```
 git clone https://github.com/realmbgl/dcosdev.git
 cd dcosdev
@@ -11,7 +11,7 @@ cd dcosdev
 
 dcosdev uses minio as its asset repository.
 
-Use the following two commands to install the minio service and make it available via the public agent.
+Use the following two commands to install the minio service and to make it available via the dc/os public agent.
 
 ```
 dcos package install marathon-lb --yes
@@ -75,7 +75,8 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
-dcosdev gives you the choice to create an operator services (sdk based) or basic services (marathon).
+dcosdev gives you the choice to create an operator services (sdk based service) or basic services (marathon service).
+
 
 ### operator services, aka sdk based service
 
@@ -146,7 +147,7 @@ myservice
 
 ### dcosdev up
 
-You upload your service assets to the asset repository using the following command.
+You upload your service assets to the asset repository using the following command. This is the same command for operator and basic services.
 ```
 dcosdev up
 ```
