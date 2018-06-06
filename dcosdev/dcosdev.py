@@ -53,8 +53,8 @@ def build_repo():
          s = f.read()
          marathon = base64.b64encode(s%{'time_epoche_ms': str(int(time.time()*1000)), 'time_str': datetime.datetime.utcnow().isoformat()})
 
-    if os.path.exists('java/build/distributions/engine-scheduler.zip'):
-         resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+operator_name()+'/engine-scheduler.zip'
+    if os.path.exists('java/build/distributions/operator-scheduler.zip'):
+         resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+operator_name()+'/operator-scheduler.zip'
 
     package['releaseVersion'] = 100
     package['config'] = config
@@ -113,8 +113,8 @@ def main():
         build_repo()
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
         artifacts.append(str('universe/'+operator_name()+'-repo.json'))
-        if os.path.exists('java/build/distributions/engine-scheduler.zip'):
-            artifacts.append(str('java/build/distributions/engine-scheduler.zip'))
+        if os.path.exists('java/build/distributions/operator-scheduler.zip'):
+            artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
         print(artifacts)
         upload(artifacts)
         print('\nafter 1st up: dcos package repo add '+operator_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+operator_name()+'/'+operator_name()+'-repo.json')
@@ -123,12 +123,12 @@ def main():
         print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
 
     elif args['operator'] and args['add'] and args['java']:
-        os.makedirs('java/src/main/java/com/mesosphere/sdk/engine/scheduler')
+        os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
         with open('java/build.gradle', 'w') as file:
              file.write(oper.build_gradle.template%{'version': sdk_version()})
         with open('java/settings.gradle', 'w') as file:
              file.write(oper.settings_gradle.template)
-        with open('java/src/main/java/com/mesosphere/sdk/engine/scheduler/Main.java', 'w') as file:
+        with open('java/src/main/java/com/mesosphere/sdk/operator/scheduler/Main.java', 'w') as file:
              file.write(oper.main_java.template)
 
     elif args['operator'] and args['build'] and args['java']:

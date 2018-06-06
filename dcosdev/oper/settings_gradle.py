@@ -1,3 +1,3 @@
 template = """
-rootProject.name = 'engine'
+rootProject.name = 'operator'
 """

@@ -6,7 +6,7 @@ template = """
       "libmesos-bundle-tar-gz": "https://downloads.mesosphere.com/libmesos-bundle/libmesos-bundle-1.11.0.tar.gz",
       "bootstrap-zip": "http://downloads.mesosphere.com/dcos-commons/artifacts/%(version)s/bootstrap.zip",
       "executor-zip": "http://downloads.mesosphere.com/dcos-commons/artifacts/%(version)s/executor.zip",
-      "scheduler-zip": "https://s3-us-west-1.amazonaws.com/mbgl-bucket/engine-scheduler.zip",
+      "scheduler-zip": "https://s3-us-west-1.amazonaws.com/mbgl-bucket/sdk/%(version)s/operator-scheduler.zip",
       "svc": "http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/%(template)s/svc.yml"
     }
   },

@@ -29,10 +29,10 @@ dependencies {
 
 distributions {
     main {
-        baseName = 'engine-scheduler'
+        baseName = 'operator-scheduler'
         version = ''
     }
 }
 
-mainClassName = 'com.mesosphere.sdk.engine.scheduler.Main'
+mainClassName = 'com.mesosphere.sdk.operator.scheduler.Main'
 """
