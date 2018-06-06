@@ -10,6 +10,7 @@ Usage:
   dcosdev release
   dcosdev operator add java
   dcosdev operator build java
+  dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
   dcosdev --version
 
@@ -132,11 +133,32 @@ def main():
              file.write(oper.main_java.template)
 
     elif args['operator'] and args['build'] and args['java']:
-        print('>>> gradle build')
+        print('>>> gradle build ...')
         dockerClient = docker.from_env()
         log = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', remove=True,
                                     volumes={os.getcwd()+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
         print(log)
+
+    elif args['operator'] and args['upgrade']:
+        old_sdk_version = sdk_version()
+        print('>>> upgrade from '+old_sdk_version+' to '+args['<new-sdk-version>'])
+
+        with open('universe/package.json', 'r') as f:
+             package = f.read().replace(old_sdk_version, args['<new-sdk-version>'])
+        with open('universe/package.json', 'w') as f:
+             f.write(package)
+
+        with open('universe/resource.json', 'r') as f:
+             resource = f.read().replace(old_sdk_version, args['<new-sdk-version>'])
+        with open('universe/resource.json', 'w') as f:
+             f.write(resource)
+
+        if os.path.exists('java/build.gradle'):
+            with open('java/build.gradle', 'r') as f:
+                 build_gradle = f.read().replace(old_sdk_version, args['<new-sdk-version>'])
+            with open('java/build.gradle', 'w') as f:
+                 f.write(build_gradle)
+
 
 if __name__ == '__main__':
     main()
