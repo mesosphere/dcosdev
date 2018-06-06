@@ -6,7 +6,8 @@ from setuptools import find_packages, setup
 REQUIRES = [
     'yml',
     'docopt==0.6.2',
-    'docker'
+    'docker',
+    'requests'
 ]
 print(find_packages())
 setup(name='dcosdev',

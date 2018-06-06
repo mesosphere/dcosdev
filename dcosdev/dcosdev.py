@@ -25,7 +25,7 @@ from collections import OrderedDict
 sys.dont_write_bytecode=True
 from minio import Minio
 from minio.error import ResponseError
-import docker
+import docker, requests
 
 import oper
 import basic
@@ -39,6 +39,9 @@ def sdk_version():
     with open('universe/package.json', 'r') as f:
          package = json.load(f)
     return package['tags'][0]
+def sha_values():
+    r = requests.get('https://downloads.mesosphere.com/dcos-commons/artifacts/'+sdk_version()+'/SHA256SUMS')
+    return {e[1]:e[0] for e in map(lambda e: e.split('  '), str(r.text).split('\n')[:-1])}
 
 def build_repo():
     repository = {'packages': [] }
@@ -94,7 +97,8 @@ def main():
         with open('universe/config.json', 'w') as file:
              file.write(oper.config.template%{'template': args['<name>']})
         with open('universe/resource.json', 'w') as file:
-             file.write(oper.resource.template%{'template': args['<name>'],'version': args['<sdk-version>']})
+             d = sha_values()
+             file.write(oper.resource.template%{'template': args['<name>'],'version': args['<sdk-version>'], 'cli-darwin': d['dcos-service-cli-darwin'], 'cli-linux': d['dcos-service-cli-linux'], 'cli-win': d['dcos-service-cli.exe']})
 
     elif args['basic'] and args['new']:
         with open('cmd.sh', 'w') as file:
@@ -108,7 +112,7 @@ def main():
         with open('universe/config.json', 'w') as file:
              file.write(basic.config.template%{'template': args['<name>']})
         with open('universe/resource.json', 'w') as file:
-             file.write(basic.resource.template%{'template': args['<name>'],'version': args['<sdk-version>']})
+             file.write(basic.resource.template%{'template': args['<name>']})
 
     elif args['up']:
         build_repo()

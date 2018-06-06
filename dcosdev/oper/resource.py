@@ -19,21 +19,21 @@ template = """
     "binaries":{
       "darwin":{
         "x86-64":{
-          "contentHash":[ { "algo":"sha256", "value":"c459d2109b31fc0b423f8cacd49df855ef898e63609f7050957f4a0e044d5432" } ],
+          "contentHash":[ { "algo":"sha256", "value":"%(cli-darwin)s" } ],
           "kind":"executable",
           "url":"https://downloads.mesosphere.com/dcos-commons/artifacts/%(version)s/dcos-service-cli-darwin"
         }
       },
       "linux":{
         "x86-64":{
-          "contentHash":[ { "algo":"sha256", "value":"{{sha256:dcos-service-cli-linux}}" } ],
+          "contentHash":[ { "algo":"sha256", "value":"%(cli-linux)s" } ],
           "kind":"executable",
           "url":"https://downloads.mesosphere.com/dcos-commons/artifacts/%(version)s/dcos-service-cli-linux"
         }
       },
       "windows":{
         "x86-64":{
-          "contentHash":[ { "algo":"sha256", "value":"{{sha256:dcos-service-cli.exe}}" } ],
+          "contentHash":[ { "algo":"sha256", "value":"%(cli-win)s" } ],
           "kind":"executable",
           "url":"https://downloads.mesosphere.com/dcos-commons/artifacts/%(version)s/dcos-service-cli.exe"
         }
