@@ -1,6 +1,9 @@
 # dcosdev
 
-First clone the dcosdev repository.
+The *dcosdev* cli provides the one convenient entrypoint for deveopering operator services (sdk services) or basic service (marathon services).
+
+
+Start with cloning the dcosdev repository.
 ```
 git clone https://github.com/realmbgl/dcosdev.git
 cd dcosdev
@@ -75,10 +78,10 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
-dcosdev gives you the choice to create an operator services (sdk based service) or basic services (marathon service).
+dcosdev gives you the choice to create an operator services (sdk services) or basic services (marathon services).
 
 
-### operator services, aka sdk based service
+### operator services, aka sdk service
 
 #### dcosdev operator new
 
