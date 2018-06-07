@@ -122,6 +122,7 @@ def main():
             artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
         print(artifacts)
         upload(artifacts)
+        os.remove('universe/'+operator_name()+'-repo.json')
         print('\nafter 1st up: dcos package repo add '+operator_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+operator_name()+'/'+operator_name()+'-repo.json')
         print('\ndcos package install '+operator_name()+' --yes')
         print('\ndcos package uninstall '+operator_name())
@@ -137,11 +138,13 @@ def main():
              file.write(oper.main_java.template)
 
     elif args['operator'] and args['build'] and args['java']:
-        print('>>> gradle build ...')
+        print('>>> gradle build starting ...')
         dockerClient = docker.from_env()
-        log = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', remove=True,
+        c = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', detach=True, auto_remove=True,
                                     volumes={os.getcwd()+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
-        print(log)
+        g = c.logs(stream=True)
+        for l in g:
+            print(l[:-1])
 
     elif args['operator'] and args['upgrade']:
         old_sdk_version = sdk_version()
