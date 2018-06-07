@@ -64,13 +64,13 @@ Usage:
   dcosdev release
   dcosdev operator add java
   dcosdev operator build java
+  dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
   dcosdev --version
 
 Options:
   -h --help     Show this screen.
   --version     Show version.
-
 ```
 
 Before you continue make sure you have the *MINIO_HOST* environment variable set.
