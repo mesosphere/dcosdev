@@ -7,6 +7,7 @@ REQUIRES = [
     'yml',
     'docopt==0.6.2',
     'docker',
+    'minio',
     'requests'
 ]
 print(find_packages())
