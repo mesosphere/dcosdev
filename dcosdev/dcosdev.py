@@ -7,7 +7,7 @@ Usage:
   dcosdev basic new <name>
   dcosdev up
   dcosdev test
-  dcosdev release
+  dcosdev release <package-version> <release-version> <s3-bucket>
   dcosdev operator add java
   dcosdev operator build java
   dcosdev operator upgrade <new-sdk-version>
@@ -43,16 +43,16 @@ def sha_values():
     r = requests.get('https://downloads.mesosphere.com/dcos-commons/artifacts/'+sdk_version()+'/SHA256SUMS')
     return {e[1]:e[0] for e in map(lambda e: e.split('  '), str(r.text).split('\n')[:-1])}
 
-def build_repo():
+def repo_build(version='0.0.0-0.0.0', releaseVersion=0):
     repository = {'packages': [] }
     packages = repository['packages']
 
     with open('universe/package.json', 'r') as f:
-         package = json.load(f)
+         package = json.load(f, object_pairs_hook=OrderedDict)
     with open('universe/config.json', 'r') as f:
          config = json.load(f, object_pairs_hook=OrderedDict)
     with open('universe/resource.json', 'r') as f:
-         resource = json.load(f)
+         resource = json.load(f, object_pairs_hook=OrderedDict)
     with open('universe/marathon.json.mustache', 'r') as f:
          s = f.read()
          marathon = base64.b64encode(s%{'time_epoche_ms': str(int(time.time()*1000)), 'time_str': datetime.datetime.utcnow().isoformat()})
@@ -60,7 +60,8 @@ def build_repo():
     if os.path.exists('java/build/distributions/operator-scheduler.zip'):
          resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+operator_name()+'/operator-scheduler.zip'
 
-    package['releaseVersion'] = 100
+    package['version'] = version
+    package['releaseVersion'] = releaseVersion
     package['config'] = config
     package['resource'] = resource
     package['marathon'] = {"v2AppMustacheTemplate": marathon}
@@ -115,7 +116,7 @@ def main():
              file.write(basic.resource.template%{'template': args['<name>']})
 
     elif args['up']:
-        build_repo()
+        repo_build()
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
         artifacts.append(str('universe/'+operator_name()+'-repo.json'))
         if os.path.exists('java/build/distributions/operator-scheduler.zip'):
@@ -127,6 +128,14 @@ def main():
         print('\ndcos package install '+operator_name()+' --yes')
         print('\ndcos package uninstall '+operator_name())
         print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
+
+    elif args['release']:
+        print('>>> !!! work in progress')
+        repo_build(args['<package-version>'], args['<release-version>'])
+        with open('universe/'+operator_name()+'-repo.json', 'r') as f:
+             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'s3.amazonaws.com/'+operator_name()+'/artifacts/'+args['<package-version>']+'/')
+        with open('universe/'+operator_name()+'-repo.json', 'w') as f:
+             f.write(repo)
 
     elif args['operator'] and args['add'] and args['java']:
         os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
