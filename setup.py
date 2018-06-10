@@ -21,7 +21,6 @@ setup(name='dcosdev',
       url="...",
       license="Apache 2",
       packages=find_packages(),
-      package_dir={'dcosdev.basic': 'dcosdev/basic'},
       entry_points={
         'console_scripts': [
             'dcosdev=dcosdev.dcosdev:main',
