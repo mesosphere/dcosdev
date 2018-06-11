@@ -8,7 +8,8 @@ REQUIRES = [
     'docopt==0.6.2',
     'docker',
     'minio',
-    'requests'
+    'requests',
+    'boto3'
 ]
 print(find_packages())
 setup(name='dcosdev',

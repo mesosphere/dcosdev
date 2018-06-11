@@ -7,7 +7,7 @@ Usage:
   dcosdev basic new <name>
   dcosdev up
   dcosdev test
-  dcosdev release <package-version> <release-version> <s3-bucket>
+  dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
   dcosdev operator upgrade <new-sdk-version>
@@ -15,8 +15,9 @@ Usage:
   dcosdev --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help                Show this screen.
+  --version                Show version.
+  --universe=<universe>    Path to a clone of https://github.com/mesosphere/universe
 
 """
 from docopt import docopt
@@ -26,6 +27,7 @@ sys.dont_write_bytecode=True
 from minio import Minio
 from minio.error import ResponseError
 import docker, requests
+import boto3
 
 import oper
 import basic
@@ -82,6 +84,13 @@ def upload(artifacts):
         except ResponseError as err:
            print(err)
 
+def upload_aws(artifacts, bucket, package_version):
+    s3 = boto3.client('s3')
+
+    for a in artifacts:
+        with open(a, "rb") as f:
+             s3.upload_fileobj(f, bucket, operator_name()+'/artifacts/'+package_version+'/'+os.path.basename(a), ExtraArgs={'ACL': 'public-read', 'ContentType': 'application/vnd.dcos.universe.repo+json;charset=utf-8;version=v4'})
+
 def main():
     args = docopt(__doc__, version='dcosdev 0.0.1')
     print(args)
@@ -130,12 +139,39 @@ def main():
         print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
 
     elif args['release']:
-        print('>>> !!! work in progress')
-        repo_build(args['<package-version>'], args['<release-version>'])
+        repo_build(args['<package-version>'], int(args['<release-version>']))
         with open('universe/'+operator_name()+'-repo.json', 'r') as f:
-             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'s3.amazonaws.com/'+operator_name()+'/artifacts/'+args['<package-version>']+'/')
+             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'.s3.amazonaws.com/'+operator_name()+'/artifacts/'+args['<package-version>']+'/')
         with open('universe/'+operator_name()+'-repo.json', 'w') as f:
              f.write(repo)
+        artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
+        artifacts.append(str('universe/'+operator_name()+'-repo.json'))
+        if os.path.exists('java/build/distributions/operator-scheduler.zip'):
+            artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
+        upload_aws(artifacts, args['<s3-bucket>'], args['<package-version>'])
+
+        if args['--universe']:
+           path = args['--universe']+'/repo/packages/'+operator_name()
+           if os.path.exists(path) and not os.path.exists(path+'/'+args['<release-version>']):
+              path = path+'/'+str(args['<release-version>'])
+              os .makedirs(path)
+              with open('universe/'+operator_name()+'-repo.json', 'r') as f:
+                   repo = json.load(f, object_pairs_hook=OrderedDict)['packages'][0]
+              with open(path+'/config.json', 'w') as f:
+                   f.write(json.dumps(repo['config'], indent=4))
+                   del repo['config']
+              with open(path+'/resource.json', 'w') as f:
+                   f.write(json.dumps(repo['resource'], indent=4))
+                   del repo['resource']
+              with open(path+'/marathon.json.mustache', 'w') as f:
+                   base64.b64encode(repo['marathon']['v2AppMustacheTemplate'])
+                   f.write(base64.b64decode(repo['marathon']['v2AppMustacheTemplate']))
+                   del repo['marathon']['v2AppMustacheTemplate']
+                   del repo['marathon']
+              with open(path+'/package.json', 'w') as f:
+                   f.write(json.dumps(repo, indent=4))
+           else:
+               print('ERROR: Package folder '+operator_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
 
     elif args['operator'] and args['add'] and args['java']:
         os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
