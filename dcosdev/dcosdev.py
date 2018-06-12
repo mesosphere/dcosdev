@@ -151,7 +151,7 @@ def main():
         upload_aws(artifacts, args['<s3-bucket>'], args['<package-version>'])
 
         if args['--universe']:
-           path = args['--universe']+'/repo/packages/'+package_name()
+           path = args['--universe']+'/repo/packages/'+package_name()[0].upper()+'/'+package_name()
            if os.path.exists(path) and not os.path.exists(path+'/'+args['<release-version>']):
               path = path+'/'+str(args['<release-version>'])
               os .makedirs(path)
