@@ -33,7 +33,7 @@ import oper
 import basic
 
 
-def operator_name():
+def package_name():
     with open('universe/package.json', 'r') as f:
          package = json.load(f)
     return package['name']
@@ -45,7 +45,7 @@ def sha_values():
     r = requests.get('https://downloads.mesosphere.com/dcos-commons/artifacts/'+sdk_version()+'/SHA256SUMS')
     return {e[1]:e[0] for e in map(lambda e: e.split('  '), str(r.text).split('\n')[:-1])}
 
-def repo_build(version='0.0.0-0.0.0', releaseVersion=0):
+def repo_build(version='snapshot', releaseVersion=0):
     repository = {'packages': [] }
     packages = repository['packages']
 
@@ -60,7 +60,7 @@ def repo_build(version='0.0.0-0.0.0', releaseVersion=0):
          marathon = base64.b64encode(s%{'time_epoche_ms': str(int(time.time()*1000)), 'time_str': datetime.datetime.utcnow().isoformat()})
 
     if os.path.exists('java/build/distributions/operator-scheduler.zip'):
-         resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+operator_name()+'/operator-scheduler.zip'
+         resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+package_name()+'/operator-scheduler.zip'
 
     package['version'] = version
     package['releaseVersion'] = releaseVersion
@@ -69,7 +69,7 @@ def repo_build(version='0.0.0-0.0.0', releaseVersion=0):
     package['marathon'] = {"v2AppMustacheTemplate": marathon}
 
     packages.append(package)
-    with open('universe/'+operator_name()+'-repo.json', 'w') as file:
+    with open('universe/'+package_name()+'-repo.json', 'w') as file:
          file.write(json.dumps(repository, indent=4))
 
 def upload(artifacts):
@@ -80,7 +80,7 @@ def upload(artifacts):
         try:
            file_stat = os.stat(a)
            file_data = open(a, 'rb')
-           minioClient.put_object('artifacts', operator_name()+'/'+os.path.basename(a), file_data, file_stat.st_size, content_type='application/vnd.dcos.universe.repo+json;charset=utf-8;version=v4')
+           minioClient.put_object('artifacts', package_name()+'/'+os.path.basename(a), file_data, file_stat.st_size, content_type='application/vnd.dcos.universe.repo+json;charset=utf-8;version=v4')
         except ResponseError as err:
            print(err)
 
@@ -89,7 +89,7 @@ def upload_aws(artifacts, bucket, package_version):
 
     for a in artifacts:
         with open(a, "rb") as f:
-             s3.upload_fileobj(f, bucket, operator_name()+'/artifacts/'+package_version+'/'+os.path.basename(a), ExtraArgs={'ACL': 'public-read', 'ContentType': 'application/vnd.dcos.universe.repo+json;charset=utf-8;version=v4'})
+             s3.upload_fileobj(f, bucket, package_name()+'/artifacts/'+package_version+'/'+os.path.basename(a), ExtraArgs={'ACL': 'public-read', 'ContentType': 'application/vnd.dcos.universe.repo+json;charset=utf-8;version=v4'})
 
 def main():
     args = docopt(__doc__, version='dcosdev 0.0.1')
@@ -127,35 +127,35 @@ def main():
     elif args['up']:
         repo_build()
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
-        artifacts.append(str('universe/'+operator_name()+'-repo.json'))
+        artifacts.append(str('universe/'+package_name()+'-repo.json'))
         if os.path.exists('java/build/distributions/operator-scheduler.zip'):
             artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
         print(artifacts)
         upload(artifacts)
-        os.remove('universe/'+operator_name()+'-repo.json')
-        print('\nafter 1st up: dcos package repo add '+operator_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+operator_name()+'/'+operator_name()+'-repo.json')
-        print('\ndcos package install '+operator_name()+' --yes')
-        print('\ndcos package uninstall '+operator_name())
-        print('\ndcos package repo remove '+operator_name()+'-repo'+'\n')
+        os.remove('universe/'+package_name()+'-repo.json')
+        print('\nafter 1st up: dcos package repo add '+package_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+package_name()+'/'+package_name()+'-repo.json')
+        print('\ndcos package install '+package_name()+' --yes')
+        print('\ndcos package uninstall '+package_name())
+        print('\ndcos package repo remove '+package_name()+'-repo'+'\n')
 
     elif args['release']:
         repo_build(args['<package-version>'], int(args['<release-version>']))
-        with open('universe/'+operator_name()+'-repo.json', 'r') as f:
-             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'.s3.amazonaws.com/'+operator_name()+'/artifacts/'+args['<package-version>']+'/')
-        with open('universe/'+operator_name()+'-repo.json', 'w') as f:
+        with open('universe/'+package_name()+'-repo.json', 'r') as f:
+             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'.s3.amazonaws.com/'+package_name()+'/artifacts/'+args['<package-version>']+'/')
+        with open('universe/'+package_name()+'-repo.json', 'w') as f:
              f.write(repo)
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
-        artifacts.append(str('universe/'+operator_name()+'-repo.json'))
+        artifacts.append(str('universe/'+package_name()+'-repo.json'))
         if os.path.exists('java/build/distributions/operator-scheduler.zip'):
             artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
         upload_aws(artifacts, args['<s3-bucket>'], args['<package-version>'])
 
         if args['--universe']:
-           path = args['--universe']+'/repo/packages/'+operator_name()
+           path = args['--universe']+'/repo/packages/'+package_name()
            if os.path.exists(path) and not os.path.exists(path+'/'+args['<release-version>']):
               path = path+'/'+str(args['<release-version>'])
               os .makedirs(path)
-              with open('universe/'+operator_name()+'-repo.json', 'r') as f:
+              with open('universe/'+package_name()+'-repo.json', 'r') as f:
                    repo = json.load(f, object_pairs_hook=OrderedDict)['packages'][0]
               with open(path+'/config.json', 'w') as f:
                    f.write(json.dumps(repo['config'], indent=4))
@@ -171,7 +171,7 @@ def main():
               with open(path+'/package.json', 'w') as f:
                    f.write(json.dumps(repo, indent=4))
            else:
-               print('ERROR: Package folder '+operator_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
+               print('ERROR: Package folder '+package_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
 
     elif args['operator'] and args['add'] and args['java']:
         os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
