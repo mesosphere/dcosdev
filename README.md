@@ -61,7 +61,7 @@ Usage:
   dcosdev basic new <name>
   dcosdev up
   dcosdev test
-  dcosdev release
+  dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
   dcosdev operator upgrade <new-sdk-version>
@@ -69,8 +69,9 @@ Usage:
   dcosdev --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -h --help                Show this screen.
+  --version                Show version.
+  --universe=<universe>    Path to a clone of https://github.com/mesosphere/universe
 ```
 
 Before you continue make sure you have the *MINIO_HOST* environment variable set.
