@@ -169,6 +169,7 @@ def main():
                    del repo['marathon']['v2AppMustacheTemplate']
                    del repo['marathon']
               with open(path+'/package.json', 'w') as f:
+                   del repo['releaseVersion']
                    f.write(json.dumps(repo, indent=4))
            else:
                print('ERROR: Package folder '+package_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
