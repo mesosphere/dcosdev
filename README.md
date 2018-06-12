@@ -192,7 +192,7 @@ cd universe
 git checkout -b myservice 
 ```
 
-From your project folder use the *dcosdev release ...* command to upload the release artifacts to s3, and to add new folder with universe files to the myservice universe branch.
+From your project folder use the *dcosdev release ...* command to upload the release artifacts to s3, and to add a new folder with universe files to the myservice universe branch.
 
 ```
 dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to a clone of https://github.com/mesosphere/universe >
