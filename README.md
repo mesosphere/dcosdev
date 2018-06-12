@@ -185,11 +185,22 @@ dcos package repo remove myservice-repo
 
 ### dcosdev release
 
-Uploads the release artifacts to s3, and add adds a new folder with universe files to a branch in a clone of the [mesosphere universe](https://github.com/mesosphere/universe).
+Clone the mesosphere universe to your local file system, and create a branch.
+```
+git clone https://github.com/mesosphere/universe.git
+cd universe
+git checkout -b myservice 
+```
+
+From your project folder use the *dcosdev release ...* command to upload the release artifacts to s3, and to add new folder with universe files to the myservice universe branch.
 
 ```
 dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to a clone of https://github.com/mesosphere/universe >
 ```
 
-You get the changes into the mesosphere universe by committing the changes to the branch, push the branch, and create a pull request.
-
+Back in your universe branch commit the changes, push the branch, create a pull request.
+```
+...
+git push origin myservice
+...
+```
