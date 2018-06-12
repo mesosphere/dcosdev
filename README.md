@@ -104,6 +104,20 @@ myservice
      |- resource.json
 ```
 
+#### configuration templates
+
+If you use configuration templates in the svc then they live in the same folder as the svc.yml file.
+```
+myservice
+ |- svc.yml
+ |- myconfiguration.yml
+ |- universe
+     |- package.json
+     |- marathon.json.mustache
+     |- config.json
+     |- resource.json
+```
+
 #### custom scheduler
 
 Use the following command to add gradle and java resources to your project for custome scheduler development.
@@ -168,4 +182,14 @@ dcos package uninstall myservice
 
 dcos package repo remove myservice-repo
 ```
+
+### dcosdev release
+
+Uploads the release artifacts to s3, and add adds a new folder with universe files to a branch in a clone of the [mesosphere universe](https://github.com/mesosphere/universe).
+
+```
+dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to a clone of https://github.com/mesosphere/universe >
+```
+
+You get the changes into the mesosphere universe by committing the changes to the branch, push the branch, and create a pull request.
 
