@@ -34,7 +34,7 @@ Create a bucket named *artifacts* and set its policy to *Read And Write*.
 
 ## install
 
-**Note:** Currently has only been tested with python 2!
+**Note:** Currently dcosdev has only been tested with python 2!
 
 Install the dcosdev cli.
 ```
@@ -192,13 +192,17 @@ cd universe
 git checkout -b myservice 
 ```
 
-From your project folder use the *dcosdev release ...* command to upload the release artifacts to s3, and to add a new folder with universe files to the myservice universe branch.
+If this is the 1st release of myservice, then you will have to create the *myservice* folder, i.e. *repo/packages/M/myservice* before using the release command. If its not the 1st release check the folder number of the last release in the *myservice* folder. The release version number to use next will have to be greater then the previous one.
+
+Change back to your *myservice* project folder. 
+
+Use the *dcosdev release ...* command to upload the release artifacts to s3, and to add a new folder with universe files to the myservice universe branch.
 
 ```
 dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to a clone of https://github.com/mesosphere/universe >
 ```
 
-Back in your universe branch commit the changes, push the branch, create a pull request.
+Change back to your local universe. Commit the changes, push the branch, and and on github create a pull request.
 ```
 ...
 git push origin myservice
