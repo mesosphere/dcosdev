@@ -34,7 +34,7 @@ Create a bucket named *artifacts* and set its policy to *Read And Write*.
 
 ## install
 
-**Note:** Currently dcosdev has only been tested with python 2!
+**Note:** Currently dcosdev has only been tested with python2 !
 
 Install the dcosdev cli.
 ```
