@@ -93,7 +93,7 @@ def upload_aws(artifacts, bucket, package_version):
 
 def main():
     args = docopt(__doc__, version='dcosdev 0.0.1')
-    print(args)
+    #print(args)
 
     if  args['operator'] and args['new']:
         with open('svc.yml', 'w') as file:
@@ -130,7 +130,7 @@ def main():
         artifacts.append(str('universe/'+package_name()+'-repo.json'))
         if os.path.exists('java/build/distributions/operator-scheduler.zip'):
             artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
-        print(artifacts)
+        print(">>> INFO: uploading "+str(artifacts))
         upload(artifacts)
         os.remove('universe/'+package_name()+'-repo.json')
         print('\nafter 1st up: dcos package repo add '+package_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+package_name()+'/'+package_name()+'-repo.json')
@@ -172,7 +172,7 @@ def main():
                    del repo['releaseVersion']
                    f.write(json.dumps(repo, indent=4))
            else:
-               print('ERROR: Package folder '+package_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
+               print('>>> ERROR: package folder '+package_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
 
     elif args['operator'] and args['add'] and args['java']:
         os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
@@ -184,7 +184,7 @@ def main():
              file.write(oper.main_java.template)
 
     elif args['operator'] and args['build'] and args['java']:
-        print('>>> gradle build starting ...')
+        print('>>> INFO: gradle build starting ...')
         dockerClient = docker.from_env()
         c = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', detach=True, auto_remove=True,
                                     volumes={os.getcwd()+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
@@ -194,7 +194,7 @@ def main():
 
     elif args['operator'] and args['upgrade']:
         old_sdk_version = sdk_version()
-        print('>>> upgrade from '+old_sdk_version+' to '+args['<new-sdk-version>'])
+        print('>>> INFO: upgrade from '+old_sdk_version+' to '+args['<new-sdk-version>'])
 
         with open('universe/package.json', 'r') as f:
              package = f.read().replace(old_sdk_version, args['<new-sdk-version>'])
