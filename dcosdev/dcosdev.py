@@ -174,6 +174,8 @@ def main():
            else:
                print('>>> ERROR: package folder '+package_name()+ ' does not exist, or release version foler \''+args['<release-version>']+'\' exists already !')
 
+        os.remove('universe/'+package_name()+'-repo.json')
+
     elif args['operator'] and args['add'] and args['java']:
         os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
         with open('java/build.gradle', 'w') as file:
