@@ -33,6 +33,8 @@ import oper
 import basic
 
 
+sdk_versions = ['0.42.1']
+
 def package_name():
     with open('universe/package.json', 'r') as f:
          package = json.load(f)
@@ -96,6 +98,10 @@ def main():
     #print(args)
 
     if  args['operator'] and args['new']:
+        if args['<sdk-version>'] not in sdk_versions:
+           print('>>> Error: unsupported sdk version! Supported sdk versions are '+str(sdk_versions)+' .')
+           return
+
         with open('svc.yml', 'w') as file:
              file.write(oper.svc.template%{'template': args['<name>']})
 
@@ -195,6 +201,10 @@ def main():
             print(l[:-1])
 
     elif args['operator'] and args['upgrade']:
+        if args['<new-sdk-version>'] not in sdk_versions:
+           print('>>> Error: unsupported sdk version! Supported sdk versions are '+str(sdk_versions)+' .')
+           return
+
         old_sdk_version = sdk_version()
         print('>>> INFO: upgrade from '+old_sdk_version+' to '+args['<new-sdk-version>'])
 
