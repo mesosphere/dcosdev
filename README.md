@@ -3,7 +3,7 @@
 The *dcosdev* cli provides the one convenient entrypoint for developing operator services (sdk services) or basic service (marathon services).
 
 
-Start with cloning the dcosdev repository.
+Start with cloning the `dcosdev` repository.
 ```
 git clone https://github.com/realmbgl/dcosdev.git
 cd dcosdev
@@ -12,9 +12,9 @@ cd dcosdev
 
 ## setup the asset repository
 
-dcosdev uses minio as its asset repository.
+`dcosdev` uses `minio` as its asset repository.
 
-Use the following two commands to install the minio service and to make it available via the dc/os public agent.
+Use the following two commands to install the `minio` service and to make it available via the dc/os public agent.
 
 ```
 dcos package install marathon-lb --yes
@@ -27,16 +27,16 @@ http://<public-agent-ip>:9000
 ```
 
 
-The minio credentials are minio / minio123.
+The `minio` credentials are minio / minio123.
 
 Create a bucket named *artifacts* and set its policy to *Read And Write*.
 
 
 ## install
 
-**Note:** Currently dcosdev has only been tested with python2 !
+**Note:** Currently `dcosdev` has only been tested with python2 !
 
-Install the dcosdev cli.
+Install the `dcosdev` cli.
 ```
 python setup.py install
 ```
@@ -50,9 +50,9 @@ mkdir myservice
 cd myservice
 ```
 
-**Note:** All dcosdev cli commands have to run from the root of your project folder.
+**Note:** All `dcosdev` cli commands have to run from the root of your project folder.
 
-Here the help output for dcosdev.
+Here the help output for `dcosdev`.
 ```
 dcosdev -h
 
@@ -81,7 +81,7 @@ Before you continue make sure you have the *MINIO_HOST* environment variable set
 export MINIO_HOST=<public-agent-ip>
 ```
 
-dcosdev gives you the choice to create an operator services (sdk services) or basic services (marathon services).
+`dcosdev` gives you the choice to create an operator services (sdk services) or basic services (marathon services).
 
 
 ### operator services, aka sdk service
@@ -90,7 +90,7 @@ dcosdev gives you the choice to create an operator services (sdk services) or ba
 
 Creating a new operator service.
 ```
-dcos operator new myservice 0.42.1
+dcosdev operator new myservice 0.42.1
 ```
 
 Your myservice project will now have the following folder file structure.
@@ -120,7 +120,7 @@ myservice
 
 #### custom scheduler
 
-Use the following command to add gradle and java resources to your project for custome scheduler development.
+Use the following command to add gradle and java resources to your project for custom scheduler development.
 ```
 dcosdev operator add java
 ```
@@ -141,7 +141,7 @@ myservice
      |- resource.json
 ```
 
-You build your custome scheduler using the following command.
+You build your custom scheduler using the following command.
 ```
 dcosdev operator build java
 ```
@@ -151,7 +151,7 @@ dcosdev operator build java
 
 Creating a new basic service.
 ```
-dcos basic new myservice
+dcosdev basic new myservice
 ```
 
 Your myservice project will now have the following folder file structure.
@@ -168,11 +168,13 @@ myservice
 ### dcosdev up
 
 You upload your service assets to the asset repository using the following command. This is the same command for operator and basic services.
+
 ```
 dcosdev up
 ```
 
 You will see the following output, showing you the dcos cli commands to take it from here.
+
 ```
 after 1st up: dcos package repo add myservice-repo --index=0 http://<public-agent-ip>:9000/artifacts/myservice/myservice-repo.json
 
@@ -185,16 +187,17 @@ dcos package repo remove myservice-repo
 
 ### dcosdev release
 
-Clone the mesosphere universe to your local file system, and create a branch.
+Clone the Mesosphere Universe repo to your local file system, and create a branch.
+
 ```
 git clone https://github.com/mesosphere/universe.git
 cd universe
-git checkout -b myservice 
+git checkout -b myservice
 ```
 
 If this is the 1st release of myservice, then you will have to create the *myservice* folder, i.e. *repo/packages/M/myservice* before using the release command. If its not the 1st release check the folder number of the last release in the *myservice* folder. The release version number to use next will have to be greater then the previous one.
 
-Change back to your *myservice* project folder. 
+Change back to your *myservice* project folder.
 
 Use the *dcosdev release ...* command to upload the release artifacts to s3, and to add a new folder with universe files to the myservice universe branch.
 
