@@ -29,7 +29,7 @@ http://<public-agent-ip>:9000
 
 The `minio` credentials are minio / minio123.
 
-Create a bucket named *artifacts* and set its policy to *Read And Write*.
+Create a bucket named *artifacts* and set its policy to *Read*.
 
 
 ## install
