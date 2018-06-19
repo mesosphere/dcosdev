@@ -54,7 +54,7 @@ mkdir myservice
 cd myservice
 ```
 
-If you chosen to build the docker image in the previous step then you would use the following commands before using dcosdev.
+If you chosen to build the docker image in the previous step then you use the following commands before using `dcosdev`.
 ```
 docker run -ti --rm -v $(pwd):/myservice mydcosdev bash
 cd /myservice
