@@ -62,10 +62,11 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
-  dcosdev test
+  dcosdev test <dcos-url> <dcos-private-key-path>
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
+  dcosdev operator add tests
   dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
   dcosdev --version
