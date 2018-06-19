@@ -177,7 +177,7 @@ dcosdev up
 You will see the following output, showing you the dcos cli commands to take it from here.
 
 ```
-after 1st up: dcos package repo add myservice-repo --index=0 http://<public-agent-ip>:9000/artifacts/myservice/myservice-repo.json
+after 1st up: dcos package repo add myservice-repo --index=0 http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/myservice-repo.json
 
 dcos package install myservice --yes
 
