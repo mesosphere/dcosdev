@@ -6,10 +6,11 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
-  dcosdev test
+  dcosdev test <dcos-url> <dcos-private-key-path>
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
+  dcosdev operator add tests
   dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
   dcosdev --version
@@ -139,10 +140,32 @@ def main():
         print(">>> INFO: uploading "+str(artifacts))
         upload(artifacts)
         os.remove('universe/'+package_name()+'-repo.json')
-        print('\nafter 1st up: dcos package repo add '+package_name()+'-repo --index=0 http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+package_name()+'/'+package_name()+'-repo.json')
+        print('\nafter 1st up: dcos package repo add '+package_name()+'-repo --index=0 http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+package_name()+'/'+package_name()+'-repo.json')
         print('\ndcos package install '+package_name()+' --yes')
         print('\ndcos package uninstall '+package_name())
         print('\ndcos package repo remove '+package_name()+'-repo'+'\n')
+
+    elif args['test']:
+        print(">>> tests starting ...")
+        dockerClient = docker.from_env()
+        c = dockerClient.containers.run('mesosphere/dcos-commons:latest', 'bash /build-tools/test_runner.sh /dcos-commons-dist', detach=True, auto_remove=True, working_dir='/build',
+                                    volumes={os.getcwd() : {'bind': '/build'},
+                                             os.getcwd()+'/tests' : {'bind': '/dcos-commons-dist/tests'},
+                                             os.getcwd()+'.gradle_cache' : {'bind': '/root/.gradle',
+                                             args['<dcos-private-key-path>'] : {'bind': '/ssh/key'}}
+                                    },
+                                    environment={'DCOS_ENTERPRISE': 'true',
+                                                 'SECURITY': 'permissive',
+                                                 'DCOS_LOGIN_USERNAME': 'bootstrapuser',
+                                                 'DCOS_LOGIN_PASSWORD': 'deleteme',
+                                                 'CLUSTER_URL': args['<dcos-url>'],
+                                                 'STUB_UNIVERSE_URL': 'http://'+os.environ['MINIO_HOST']+':9000/artifacts/myservice/myservice-repo.json',
+                                                 'FRAMEWORK': package_name(),
+                                                 'PYTEST_ARGS': '-m \"sanity and not azure\"'
+                                    })
+        g = c.logs(stream=True)
+        for l in g:
+            print(l[:-1])
 
     elif args['release']:
         repo_build(args['<package-version>'], int(args['<release-version>']))
@@ -199,6 +222,19 @@ def main():
         g = c.logs(stream=True)
         for l in g:
             print(l[:-1])
+
+    elif args['operator'] and args['add'] and args['tests']:
+        os.makedirs('tests')
+        with open('tests/__init__.py', 'w') as file:
+             file.write(oper.tests.init_py.template)
+        with open('tests/config.py', 'w') as file:
+             file.write(oper.tests.config.template%{'template': package_name()})
+        with open('tests/conftest.py', 'w') as file:
+             file.write(oper.tests.conftest.template)
+        with open('tests/test_overlay.py', 'w') as file:
+             file.write(oper.tests.test_overlay.template%{'template': package_name()})
+        with open('tests/test_sanity.py', 'w') as file:
+             file.write(oper.tests.test_sanity.template)
 
     elif args['operator'] and args['upgrade']:
         if args['<new-sdk-version>'] not in sdk_versions:
