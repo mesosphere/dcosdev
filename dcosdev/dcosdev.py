@@ -6,7 +6,7 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
-  dcosdev test <dcos-url> <dcos-private-key-path>
+  dcosdev test <dcos-url> <dcos-private-key-path> [--dcos-username=<username>] [--dcos-password=<password>]
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
@@ -16,9 +16,11 @@ Usage:
   dcosdev --version
 
 Options:
-  -h --help                Show this screen.
-  --version                Show version.
-  --universe=<universe>    Path to a clone of https://github.com/mesosphere/universe
+  -h --help                   Show this screen.
+  --version                   Show version.
+  --universe=<universe>       Path to a clone of https://github.com/mesosphere/universe
+  --dcos-username=<username>  dc/os username [default: bootstrapuser]
+  --dcos-password=<password>  dc/os password [default: deleteme]
 
 """
 from docopt import docopt
@@ -156,8 +158,8 @@ def main():
                                     },
                                     environment={'DCOS_ENTERPRISE': 'true',
                                                  'SECURITY': 'permissive',
-                                                 'DCOS_LOGIN_USERNAME': 'bootstrapuser',
-                                                 'DCOS_LOGIN_PASSWORD': 'deleteme',
+                                                 'DCOS_LOGIN_USERNAME': args['--dcos-username'],
+                                                 'DCOS_LOGIN_PASSWORD': args['--dcos-password'],
                                                  'CLUSTER_URL': args['<dcos-url>'],
                                                  'STUB_UNIVERSE_URL': 'http://'+os.environ['MINIO_HOST']+':9000/artifacts/myservice/myservice-repo.json',
                                                  'FRAMEWORK': package_name(),
