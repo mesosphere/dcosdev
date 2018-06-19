@@ -36,11 +36,15 @@ Create a bucket named *artifacts* and set its policy to *Read*.
 
 **Note:** Currently `dcosdev` has only been tested with python2 !
 
-Install the `dcosdev` cli.
+Install the `dcosdev` cli, or if you don't want to mess around with the python environment on your local machine then build a docker image as described in the next step.
 ```
-python setup.py install
+pip install .
 ```
 
+The following command builds a docker image that includes `dcosdev` and the `dcoscli`.
+```
+docker build --no-cache -f misc/Dockerfile -t mydcosdev .
+```
 
 ## developer guide
 
@@ -48,6 +52,12 @@ In your workspace create a project folder for your new service.
 ```
 mkdir myservice
 cd myservice
+```
+
+If you chosen to build the docker image in the previous step then you would use the following commands before using dcosdev.
+```
+docker run -ti --rm -v $(pwd):/myservice mydcosdev bash
+cd /myservice
 ```
 
 **Note:** All `dcosdev` cli commands have to run from the root of your project folder.
