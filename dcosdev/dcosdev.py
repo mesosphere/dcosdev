@@ -149,11 +149,12 @@ def main():
 
     elif args['test']:
         print(">>> tests starting ...")
+        project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
         dockerClient = docker.from_env()
         c = dockerClient.containers.run('mesosphere/dcos-commons:latest', 'bash /build-tools/test_runner.sh /dcos-commons-dist', detach=True, auto_remove=True, working_dir='/build',
-                                    volumes={os.getcwd() : {'bind': '/build'},
-                                             os.getcwd()+'/tests' : {'bind': '/dcos-commons-dist/tests'},
-                                             os.getcwd()+'.gradle_cache' : {'bind': '/root/.gradle',
+                                    volumes={project_path : {'bind': '/build'},
+                                             project_path+'/tests' : {'bind': '/dcos-commons-dist/tests'},
+                                             project_path+'.gradle_cache' : {'bind': '/root/.gradle',
                                              args['<dcos-private-key-path>'] : {'bind': '/ssh/key'}}
                                     },
                                     environment={'DCOS_ENTERPRISE': 'true',
@@ -218,9 +219,10 @@ def main():
 
     elif args['operator'] and args['build'] and args['java']:
         print('>>> INFO: gradle build starting ...')
+        project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
         dockerClient = docker.from_env()
         c = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', detach=True, auto_remove=True,
-                                    volumes={os.getcwd()+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
+                                    volumes={project_path+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
         g = c.logs(stream=True)
         for l in g:
             print(l[:-1])
