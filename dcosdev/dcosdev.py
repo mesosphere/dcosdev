@@ -173,7 +173,7 @@ def main():
     elif args['release']:
         repo_build(args['<package-version>'], int(args['<release-version>']))
         with open('universe/'+package_name()+'-repo.json', 'r') as f:
-             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/myservice/', 'https://'+args['<s3-bucket>']+'.s3.amazonaws.com/'+package_name()+'/artifacts/'+args['<package-version>']+'/')
+             repo = f.read().replace('http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+package_name()+'/', 'https://'+args['<s3-bucket>']+'.s3.amazonaws.com/'+package_name()+'/artifacts/'+args['<package-version>']+'/')
         with open('universe/'+package_name()+'-repo.json', 'w') as f:
              f.write(repo)
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
