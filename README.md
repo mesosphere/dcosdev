@@ -56,7 +56,7 @@ cd myservice
 
 If you chosen to build the docker image in the previous step then you use the following commands before using `dcosdev`.
 ```
-docker run -ti --rm -v $(pwd):/myservice mydcosdev bash
+docker run -ti --rm -e PROJECT_PATH=$(pwd) -v $(pwd):/myservice -v /var/run/docker.sock:/var/run/docker.sock mydcosdev bash
 cd /myservice
 ```
 
