@@ -144,7 +144,7 @@ myservice
  |   |- build.gradle
  |   |- settings.gradle
  |   |- src
- |   |   |- /main/java/com/mesosphere/sdk/engine/scheduler/Main.java
+ |       |- /main/java/com/mesosphere/sdk/engine/scheduler/Main.java
  |- universe
      |- package.json
      |- marathon.json.mustache
