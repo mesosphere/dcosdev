@@ -162,7 +162,7 @@ def main():
                                                  'DCOS_LOGIN_USERNAME': args['--dcos-username'],
                                                  'DCOS_LOGIN_PASSWORD': args['--dcos-password'],
                                                  'CLUSTER_URL': args['<dcos-url>'],
-                                                 'STUB_UNIVERSE_URL': 'http://'+os.environ['MINIO_HOST']+':9000/artifacts/myservice/myservice-repo.json',
+                                                 'STUB_UNIVERSE_URL': 'http://'+os.environ['MINIO_HOST']+':9000/artifacts/'+package_name()+'/'+package_name()+'-repo.json',
                                                  'FRAMEWORK': package_name(),
                                                  'PYTEST_ARGS': '-m \"sanity and not azure\"'
                                     })
