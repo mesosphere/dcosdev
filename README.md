@@ -5,7 +5,7 @@ The *dcosdev* cli provides the one convenient entrypoint for developing operator
 
 Start with cloning the `dcosdev` repository.
 ```
-git clone https://github.com/realmbgl/dcosdev.git
+git clone https://github.com/mesosphere/dcosdev.git
 cd dcosdev
 ```
 
