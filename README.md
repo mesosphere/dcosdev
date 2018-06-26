@@ -129,6 +129,8 @@ myservice
      |- resource.json
 ```
 
+`dcosdev up` will also upload the templates to the asset repository. You will have to configure the uri to the template in the *resource.json* file, and have a fetch statement in the *marathon.json.mustache*.
+
 #### custom scheduler
 
 Use the following command to add gradle and java resources to your project for custom scheduler development.
