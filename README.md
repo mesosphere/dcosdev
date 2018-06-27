@@ -5,7 +5,7 @@ The *dcosdev* cli provides the one convenient entrypoint for developing operator
 
 Start with cloning the `dcosdev` repository.
 ```
-git clone https://github.com/realmbgl/dcosdev.git
+git clone https://github.com/mesosphere/dcosdev.git
 cd dcosdev
 ```
 
@@ -128,6 +128,8 @@ myservice
      |- config.json
      |- resource.json
 ```
+
+`dcosdev up` will also upload the templates to the asset repository. You will have to configure the uri to the template in the *resource.json* file, and have a fetch statement in the *marathon.json.mustache*.
 
 #### custom scheduler
 
