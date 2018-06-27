@@ -6,7 +6,7 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
-  dcosdev test <dcos-url> <dcos-private-key-path> [--dcos-username=<username>] [--dcos-password=<password>]
+  dcosdev test <dcos-url> [--dcos-username=<username>] [--dcos-password=<password>]
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java
   dcosdev operator build java
@@ -154,8 +154,7 @@ def main():
         c = dockerClient.containers.run('mesosphere/dcos-commons:latest', 'bash /build-tools/test_runner.sh /dcos-commons-dist', detach=True, auto_remove=True, working_dir='/build',
                                     volumes={project_path : {'bind': '/build'},
                                              project_path+'/tests' : {'bind': '/dcos-commons-dist/tests'},
-                                             project_path+'.gradle_cache' : {'bind': '/root/.gradle',
-                                             args['<dcos-private-key-path>'] : {'bind': '/ssh/key'}}
+                                             project_path+'.gradle_cache' : {'bind': '/root/.gradle'}
                                     },
                                     environment={'DCOS_ENTERPRISE': 'true',
                                                  'SECURITY': 'permissive',
