@@ -159,6 +159,33 @@ You build your custom scheduler using the following command.
 dcosdev operator build java
 ```
 
+#### integration tests
+
+Use the following command to add integration tests to your project.
+```
+dcosdev operator add tests
+```
+
+Your myservice project will now have the following folder file structure. Two tests will be added, `sanity` tests foldered service name deployment, `overlay` tests overlay networking. You will have to add further tests.
+```
+myservice
+ |- svc.yml
+ |- tests
+ |   |- test_overlay.py
+ |   |- test_sanity.py
+ |   |- ...
+ |
+ |- universe
+     |- package.json
+     |- marathon.json.mustache
+     |- config.json
+     |- resource.json
+```
+
+You run the tests using the following command.
+```
+dcosdev test <dcos-url> [--dcos-username=<username>] [--dcos-password=<password>]
+```
 
 ### basic service, aka marathon services
 
