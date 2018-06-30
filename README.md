@@ -242,7 +242,7 @@ Change back to your *myservice* project folder.
 Use the *dcosdev release ...* command to upload the release artifacts to s3, and to add a new folder with universe files to the myservice universe branch.
 
 ```
-dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to a clone of https://github.com/mesosphere/universe >
+dcosdev release 0.1.0-1.0.0 0 <s3-bucket> --universe=<Path to clone of https://github.com/mesosphere/universe >
 ```
 
 Change back to your local universe. Commit the changes, push the branch, and and on github create a pull request.
@@ -251,3 +251,5 @@ Change back to your local universe. Commit the changes, push the branch, and and
 git push origin myservice
 ...
 ```
+**Note:** If you dont have permissions to push a branch to the universe, then you will have to go the universe fork route. Do the changes in your fork and then create a pull request.
+
