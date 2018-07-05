@@ -18,7 +18,7 @@ Usage:
 Options:
   -h --help                   Show this screen.
   --version                   Show version.
-  --universe=<universe>       Path to a clone of https://github.com/mesosphere/universe
+  --universe=<universe>       Path to a clone of https://github.com/mesosphere/universe (or universe fork)
   --dcos-username=<username>  dc/os username [default: bootstrapuser]
   --dcos-password=<password>  dc/os password [default: deleteme]
 
