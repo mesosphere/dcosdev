@@ -6,10 +6,10 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
+  dcosdev build java
   dcosdev test <dcos-url> [--dcos-username=<username>] [--dcos-password=<password>]
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
-  dcosdev operator add java
-  dcosdev operator build java
+  dcosdev operator add java-scheduler
   dcosdev operator add tests
   dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
@@ -137,8 +137,10 @@ def main():
         repo_build()
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
         artifacts.append(str('universe/'+package_name()+'-repo.json'))
-        if os.path.exists('java/build/distributions/operator-scheduler.zip'):
-            artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
+        if os.path.exists('java'):
+           java_projects = ['java/'+f for f in os.listdir('java') if os.path.isdir('java/'+f)]
+           dists = {jp+'/build/distributions':os.listdir(jp+'/build/distributions') for jp in java_projects}
+           artifacts.extend([d+'/'+f for d in dists for f in dists[d]])
         print(">>> INFO: uploading "+str(artifacts))
         upload(artifacts)
         os.remove('universe/'+package_name()+'-repo.json')
@@ -146,6 +148,18 @@ def main():
         print('\ndcos package install '+package_name()+' --yes')
         print('\ndcos package uninstall '+package_name())
         print('\ndcos package repo remove '+package_name()+'-repo'+'\n')
+
+    elif args['build'] and args['java']:
+        project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
+        java_projects = [f for f in os.listdir(project_path+'/java') if os.path.isdir(project_path+'/java/'+f)]
+        dockerClient = docker.from_env()
+        for jp in java_projects:
+            print('\n>>> INFO: gradle build starting for ' + jp)
+            c = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', detach=True, auto_remove=True,
+                                        volumes={project_path+'/java/'+jp : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
+            g = c.logs(stream=True)
+            for l in g:
+                print(l[:-1])
 
     elif args['test']:
         print(">>> tests starting ...")
@@ -177,8 +191,10 @@ def main():
              f.write(repo)
         artifacts = [f for f in os.listdir('.') if os.path.isfile(f)]
         artifacts.append(str('universe/'+package_name()+'-repo.json'))
-        if os.path.exists('java/build/distributions/operator-scheduler.zip'):
-            artifacts.append(str('java/build/distributions/operator-scheduler.zip'))
+        if os.path.exists('java'):
+           java_projects = ['java/'+f for f in os.listdir('java') if os.path.isdir('java/'+f)]
+           dists = {jp+'/build/distributions':os.listdir(jp+'/build/distributions') for jp in java_projects}
+           artifacts.extend([d+'/'+f for d in dists for f in dists[d]])
         upload_aws(artifacts, args['<s3-bucket>'], args['<package-version>'])
 
         if args['--universe']:
@@ -207,24 +223,14 @@ def main():
 
         os.remove('universe/'+package_name()+'-repo.json')
 
-    elif args['operator'] and args['add'] and args['java']:
-        os.makedirs('java/src/main/java/com/mesosphere/sdk/operator/scheduler')
-        with open('java/build.gradle', 'w') as file:
+    elif args['operator'] and args['add'] and args['java-scheduler']:
+        os.makedirs('java/scheduler/src/main/java/com/mesosphere/sdk/operator/scheduler')
+        with open('java/scheduler/build.gradle', 'w') as file:
              file.write(oper.build_gradle.template%{'version': sdk_version()})
-        with open('java/settings.gradle', 'w') as file:
+        with open('java/scheduler/settings.gradle', 'w') as file:
              file.write(oper.settings_gradle.template)
-        with open('java/src/main/java/com/mesosphere/sdk/operator/scheduler/Main.java', 'w') as file:
+        with open('java/scheduler/src/main/java/com/mesosphere/sdk/operator/scheduler/Main.java', 'w') as file:
              file.write(oper.main_java.template)
-
-    elif args['operator'] and args['build'] and args['java']:
-        print('>>> INFO: gradle build starting ...')
-        project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
-        dockerClient = docker.from_env()
-        c = dockerClient.containers.run('gradle:4.8.0-jdk8', 'gradle check distZip', detach=True, auto_remove=True,
-                                    volumes={project_path+'/java' : {'bind': '/home/gradle/project'}}, working_dir='/home/gradle/project')
-        g = c.logs(stream=True)
-        for l in g:
-            print(l[:-1])
 
     elif args['operator'] and args['add'] and args['tests']:
         os.makedirs('tests')
