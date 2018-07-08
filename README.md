@@ -72,19 +72,21 @@ Usage:
   dcosdev operator new <name> <sdk-version>
   dcosdev basic new <name>
   dcosdev up
-  dcosdev test <dcos-url> <dcos-private-key-path>
+  dcosdev build java
+  dcosdev test <dcos-url> [--dcos-username=<username>] [--dcos-password=<password>]
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
-  dcosdev operator add java
-  dcosdev operator build java
+  dcosdev operator add java-scheduler
   dcosdev operator add tests
   dcosdev operator upgrade <new-sdk-version>
   dcosdev (-h | --help)
   dcosdev --version
 
 Options:
-  -h --help                Show this screen.
-  --version                Show version.
-  --universe=<universe>    Path to a clone of https://github.com/mesosphere/universe
+  -h --help                   Show this screen.
+  --version                   Show version.
+  --universe=<universe>       Path to a clone of https://github.com/mesosphere/universe (or universe fork)
+  --dcos-username=<username>  dc/os username [default: bootstrapuser]
+  --dcos-password=<password>  dc/os password [default: deleteme]
 ```
 
 Before you continue make sure you have the *MINIO_HOST* environment variable set.
@@ -135,7 +137,7 @@ myservice
 
 Use the following command to add gradle and java resources to your project for custom scheduler development.
 ```
-dcosdev operator add java
+dcosdev operator add java-scheduler
 ```
 
 Your myservice project will now have the following folder file structure.
@@ -143,10 +145,11 @@ Your myservice project will now have the following folder file structure.
 myservice
  |- svc.yml
  |- java
- |   |- build.gradle
- |   |- settings.gradle
- |   |- src
- |       |- /main/java/com/mesosphere/sdk/engine/scheduler/Main.java
+ |   |- scheduler
+ |       |- build.gradle
+ |       |- settings.gradle
+ |       |- src
+ |           |- /main/java/com/mesosphere/sdk/engine/scheduler/Main.java
  |- universe
      |- package.json
      |- marathon.json.mustache
@@ -156,8 +159,11 @@ myservice
 
 You build your custom scheduler using the following command.
 ```
-dcosdev operator build java
+dcosdev build java
 ```
+
+**Note:** You can add further java projects as peer folders to the `scheduler folder` under `java`. TBD introduce similar support for GO.
+
 
 #### integration tests
 
