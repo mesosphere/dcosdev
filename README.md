@@ -162,7 +162,7 @@ You build your custom scheduler using the following command.
 dcosdev build java
 ```
 
-**Note:** You can add further java projects as peer folders to the `scheduler folder` under `java`. TBD introduce similar support for GO.
+**Note:** You can add further gradle java projects as peer folders to the `scheduler folder` under `java`. TBD introduce similar support for GO.
 
 
 #### integration tests
