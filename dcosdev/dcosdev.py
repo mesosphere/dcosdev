@@ -169,7 +169,7 @@ def main():
         print(">>> tests starting ...")
         project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
         dockerClient = docker.from_env()
-        c = dockerClient.containers.run('mesosphere/dcos-commons:latest', 'bash /build-tools/test_runner.sh /dcos-commons-dist', detach=True, auto_remove=True, working_dir='/build',
+        c = dockerClient.containers.run('realmbgl/dcos-commons:'+sdk_version(), 'bash /build-tools/test_runner.sh /dcos-commons-dist', detach=True, auto_remove=True, working_dir='/build',
                                     volumes={project_path : {'bind': '/build'},
                                              project_path+'/tests' : {'bind': '/dcos-commons-dist/tests'},
                                              project_path+'.gradle_cache' : {'bind': '/root/.gradle'}
