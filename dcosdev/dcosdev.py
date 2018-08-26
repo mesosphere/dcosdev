@@ -64,7 +64,7 @@ def build_repo(version='snapshot', releaseVersion=0):
          s = f.read()
          marathon = base64.b64encode(s%{'time_epoche_ms': str(int(time.time()*1000)), 'time_str': datetime.datetime.utcnow().isoformat()})
 
-    if os.path.exists('java/build/distributions/operator-scheduler.zip'):
+    if os.path.exists('java/scheduler/build/distributions/operator-scheduler.zip'):
          resource['assets']['uris']['scheduler-zip'] = 'http://minio.marathon.l4lb.thisdcos.directory:9000/artifacts/'+package_name()+'/operator-scheduler.zip'
 
     package['version'] = version
