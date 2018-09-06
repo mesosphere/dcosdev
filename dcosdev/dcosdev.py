@@ -36,7 +36,7 @@ import oper
 import basic
 
 
-sdk_versions = ['0.42.1']
+sdk_versions = ['0.42.1', '0.53.0']
 
 def package_name():
     with open('universe/package.json', 'r') as f:
@@ -263,10 +263,10 @@ def main():
         with open('universe/resource.json', 'w') as f:
              f.write(resource)
 
-        if os.path.exists('java/build.gradle'):
-            with open('java/build.gradle', 'r') as f:
+        if os.path.exists('java/scheduler/build.gradle'):
+            with open('java/scheduler/build.gradle', 'r') as f:
                  build_gradle = f.read().replace(old_sdk_version, args['<new-sdk-version>'])
-            with open('java/build.gradle', 'w') as f:
+            with open('java/scheduler/build.gradle', 'w') as f:
                  f.write(build_gradle)
 
 
