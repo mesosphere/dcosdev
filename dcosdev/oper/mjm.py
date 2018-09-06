@@ -32,7 +32,7 @@ template = """
     "FRAMEWORK_USER": "{{service.user}}",
     "FRAMEWORK_PRINCIPAL": "{{service.service_account}}",
     "FRAMEWORK_LOG_LEVEL": "{{service.log_level}}",
-    "MESOS_API_VERSION": "{{service.mesos_api_version}}",
+    "MESOS_API_VERSION": "V1",
 
     "NODE_COUNT": "{{node.count}}",
     "NODE_PLACEMENT": "{{{node.placement_constraint}}}",
