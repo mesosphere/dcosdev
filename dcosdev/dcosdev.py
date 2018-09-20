@@ -155,7 +155,7 @@ def main():
 
     elif args['build'] and args['java']:
         project_path =  os.environ['PROJECT_PATH'] if 'PROJECT_PATH' in os.environ else os.getcwd()
-        java_projects = [f for f in os.listdir(project_path+'/java') if os.path.isdir(project_path+'/java/'+f)]
+        java_projects = [f for f in os.listdir(os.getcwd()+'/java') if os.path.isdir(os.getcwd()+'/java/'+f)]
         dockerClient = docker.from_env()
         for jp in java_projects:
             print('\n>>> INFO: gradle build starting for ' + jp)
