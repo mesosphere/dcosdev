@@ -7,7 +7,7 @@ Usage:
   dcosdev basic new <name>
   dcosdev up
   dcosdev build java
-  dcosdev test <dcos-url> [--dcos-username=<username>] [--dcos-password=<password>]
+  dcosdev test <dcos-url> [--strict] [--dcos-username=<username>] [--dcos-password=<password>]
   dcosdev release <package-version> <release-version> <s3-bucket> [--universe=<universe>]
   dcosdev operator add java-scheduler
   dcosdev operator add tests
@@ -19,6 +19,7 @@ Options:
   -h --help                   Show this screen.
   --version                   Show version.
   --universe=<universe>       Path to a clone of https://github.com/mesosphere/universe (or universe fork)
+  --strict                    Test cluster is running in strict mode
   --dcos-username=<username>  dc/os username [default: bootstrapuser]
   --dcos-password=<password>  dc/os password [default: deleteme]
 
@@ -175,7 +176,7 @@ def main():
                                              project_path+'.gradle_cache' : {'bind': '/root/.gradle'}
                                     },
                                     environment={'DCOS_ENTERPRISE': 'true',
-                                                 'SECURITY': 'permissive',
+                                                 'SECURITY': 'strict' if args['--strict'] else '',
                                                  'DCOS_LOGIN_USERNAME': args['--dcos-username'],
                                                  'DCOS_LOGIN_PASSWORD': args['--dcos-password'],
                                                  'CLUSTER_URL': args['<dcos-url>'],
