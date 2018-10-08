@@ -18,7 +18,7 @@ Use the following two commands to install the `minio` service and to make it ava
 
 ```
 dcos package install marathon-lb --yes
-dcos marathon app add misc/minio.json
+dcos package install minio --yes
 ```
 
 In your browser enter the following address.
