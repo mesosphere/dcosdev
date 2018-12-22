@@ -1,6 +1,6 @@
 # dcosdev
 
-The *dcosdev* cli provides the one convenient entrypoint for developing operator services (sdk services) or basic service (marathon services).
+The *dcosdev* cli provides the one convenient entrypoint for developing operator services ([sdk services](https://mesosphere.github.io/dcos-commons/developer-guide/)) or basic service (marathon services).
 
 
 Start with cloning the `dcosdev` repository.
