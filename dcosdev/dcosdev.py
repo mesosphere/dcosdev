@@ -37,7 +37,7 @@ import oper
 import basic
 
 
-sdk_versions = ['0.42.1', '0.53.0']
+sdk_versions = ['0.42.1', '0.53.0', '0.55.2']
 
 def package_name():
     with open('universe/package.json', 'r') as f:
